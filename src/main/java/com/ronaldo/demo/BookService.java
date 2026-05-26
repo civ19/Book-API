@@ -21,7 +21,7 @@ public class BookService {
     //read
         //get by id
     public BookResponse getById(long id){
-        Book book = repo.findById(id).orElseThrow(() -> new BookNotF; //new book. find by id, or we make it null. so we can deal with both cases of optional
+        Book book = repo.findById(id).orElse(null); //new book. find by id, or we make it null. so we can deal with both cases of optional
         return new BookResponse(book.getId(), book.getTitle(), book.getAuthor());
     }
         //get all
