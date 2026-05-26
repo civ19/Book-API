@@ -21,7 +21,7 @@ public class BookService {
     //read
         //get by id
     public BookResponse getById(long id){
-        Book book = repo.findById(id).orElse(null); //new book. find by id, or we make it null. so we can deal with both cases of optional
+        Book book = repo.findById(id).orElseThrow(()->new BookNotFoundException(id)); //new book. find by id, or we throw an exception and we handle it oursleves
         return new BookResponse(book.getId(), book.getTitle(), book.getAuthor());
     }
         //get all
@@ -39,6 +39,11 @@ public class BookService {
         updated.setId(id);
         repo.save(updated);
         return new BookResponse(id, updated.getTitle(), updated.getAuthor());
+    }
+
+    public void delete(long id) {
+        Book book = repo.findById(id).orElseThrow(()-> new BookNotFoundException(id));
+        repo.delete(book);
     }
 
 }
