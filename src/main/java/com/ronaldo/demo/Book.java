@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 //Domain model
+@Entity
 public class Book {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY) //increments id
     private long id; //primary key
 
     @Column
@@ -15,6 +17,11 @@ public class Book {
     private String author;
 
     public Book(){} //empty constructor for postgresql
+
+    public Book(CreateBookRequest req) {
+        this.title = req.title();
+        this.author = req.author();
+    }
 
     //getters and setters
     public long getId() {

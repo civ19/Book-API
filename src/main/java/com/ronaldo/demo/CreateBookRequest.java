@@ -1,4 +1,4 @@
 package com.ronaldo.demo;
 
-public class CreateBookRequest {
+public record CreateBookRequest (String title, String author){
 }
