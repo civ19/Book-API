@@ -27,7 +27,7 @@ public class BookIntegrationTest {
     public void testUpdateBook() throws Exception {
         //ARRANGE: prep fake data
         Long bookId = 1L;
-        CreateBookRequest testBook = new CreateBookRequest(bookId, "New Title", "New Author");
+        CreateBookRequest testBook = new CreateBookRequest("New Title", "New Author");
 
         //ACT: use mockmvc to fire the http request
         mockMvc.perform(put("/books/{id}", bookId)
