@@ -31,8 +31,8 @@ public class BookIntegrationTest {
 
         //ACT: use mockmvc to fire the http request
         mockMvc.perform(put("/books/{id}", bookId)
-                .contentType(MediaType.APPLICATION_JSON) //tells controller were looking at json
-                .content(objectMapper.writeValueAsString(testBook)))//passes the actual content(json) text payload into request body
+                        .contentType(MediaType.APPLICATION_JSON) //tells controller were looking at json
+                        .content(objectMapper.writeValueAsString(testBook)))//passes the actual content(json) text payload into request body
                 .andExpect(status().isOk()) //master verification method. intercepts server and validates if we get the thing/check we pass in. so, check if status is 200
                 //jsonpath expects string -> finds specific key in arg, in returned json. so, jsonPath("$field")
                 //value compares actual text value passed in, to see if it matches the jsonpath
