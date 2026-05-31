@@ -23,6 +23,12 @@ public class Book {
         this.author = req.author();
     }
 
+    public Book(Long id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+    }
+
     //getters and setters
     public long getId() {
         return id;
