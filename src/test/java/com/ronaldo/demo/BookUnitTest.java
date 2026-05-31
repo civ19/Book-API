@@ -36,6 +36,12 @@ public class BookUnitTest {
         Long targetId = 1L;
         Book fakeBook = new Book(targetId, "The Secret History", "Donna Tartt");
         Mockito.when(bookRepo.findById(targetId)).thenReturn(Optional.of(fakeBook)); //if we call the findbyid on fakebooks id it should return, well, fakebook lol
+        //so first we find the id then do getbyid after
+
+        //ACT - the result of the function. catches whatever test function returns
+        BookResponse testResponse = bookService.getById(targetId); // actual test of the function
+
+        //
     }
 
 }
