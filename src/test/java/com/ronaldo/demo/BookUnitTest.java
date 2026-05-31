@@ -41,7 +41,15 @@ public class BookUnitTest {
         //ACT - the result of the function. catches whatever test function returns
         BookResponse testResponse = bookService.getById(targetId); // actual test of the function
 
-        //
+        //ASSERT - running the rules
+        Assertions.assertNotNull(testResponse); //musnt be null
+        Assertions.assertEquals(targetId, testResponse.id()); //expects target id. expect = the value the code should return
+        Assertions.assertEquals(fakeBook.getTitle(), testResponse.title()); //expects fakebooks title and
+        Assertions.assertEquals("Donna Tartt", testResponse.author());
+
+        //VERIFY
+        Mockito.verify(bookRepo, Mockito.times(1)).findById(targetId);
+
     }
 
 }
