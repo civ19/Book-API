@@ -14,8 +14,8 @@ public class BookService {
     public BookResponse create(CreateBookRequest req) {
         //return the request
         Book book = new Book(req);
-        repo.save(book);
-        return new BookResponse(book.getId(), req.title(), req.author());
+        Book savedBook = repo.save(book);
+        return new BookResponse(savedBook.getId(), req.title(), req.author()); //captures saved book's id
     }
 
     //read

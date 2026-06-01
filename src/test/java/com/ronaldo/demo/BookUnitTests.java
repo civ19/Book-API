@@ -71,7 +71,7 @@ public class BookUnitTests {
         //arrange
         //create saves book and then reutrns new book response with the fields put in. no id
         CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
-        Book mockSave = new Book(req);
+        Book mockSave = new Book(1L, "Sample Title", "Sample Author");
         Mockito.when(bookRepo.save(any(Book.class))).thenReturn(mockSave); //if we save any book, return mocksave
 
         //act: simulate end result target landing. that is, call the function like normal
