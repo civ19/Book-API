@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -60,6 +61,13 @@ public class BookControllerWebMvcTest {
                 .andExpect(status().isBadRequest()); //err.400
     }
 
-    @Test
-
+    @Test //testing for 404: not found !
+    public void TestGetBookById_SadPath_404() throws Exception {
+        //arrange: when we get an invalid id, it should throw a new bnfe
+        Long invalidId = 999L;
+        when(bookService.getById(invalidId)).thenThrow(new BookNotFoundException(invalidId));
+        //Act and assert: if we get an invalid id then we should expect a 404 not found, and the content type is json
+        mockMvc.perform(get("/books/{id}", invalidId).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound()); //expect 404
+    }
 }
