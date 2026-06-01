@@ -9,7 +9,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY) //increments id
-    private long id; //primary key
+    private Long id; //primary key
 
     @Column
     private String title;

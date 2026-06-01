@@ -5,24 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
-
-import static org.mockito.Mockito.*;
 
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.any;
 
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class BookUnitTest {
+public class BookUnitTests {
     @Mock
     private BookRepository bookRepo; //the fake, blank puppet version of bookrepo. @Mock => "mock this thing"
 
@@ -41,14 +35,14 @@ public class BookUnitTest {
         //ACT - the result of the function. catches whatever test function returns
         BookResponse testResponse = bookService.getById(targetId); // actual test of the function
 
-        //ASSERT - running the rules
+        //ASSERT - running the rules. goal: response, which is return by getbyId, must have the same stuff as the fakebook so we properly return it
         Assertions.assertNotNull(testResponse); //musnt be null
         Assertions.assertEquals(targetId, testResponse.id()); //expects target id. expect = the value the code should return
-        Assertions.assertEquals(fakeBook.getTitle(), testResponse.title()); //expects fakebooks title and
+        Assertions.assertEquals(fakeBook.getTitle(), testResponse.title()); //expects fakebooks title to be the same as the response's title
         Assertions.assertEquals("Donna Tartt", testResponse.author());
 
         //VERIFY
-        Mockito.verify(bookRepo, Mockito.times(1)).findById(targetId);
+        Mockito.verify(bookRepo, Mockito.times(1)).findById(targetId); //making sure it runs exactly one time
 
     }
 
