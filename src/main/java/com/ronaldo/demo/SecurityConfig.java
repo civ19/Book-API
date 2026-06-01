@@ -39,8 +39,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
         // Pass the userDetailsService straight into the new constructor argument!
-        org.springframework.security.authentication.dao.DaoAuthenticationProvider provider =
-                new org.springframework.security.authentication.dao.DaoAuthenticationProvider(userDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+        //explicitly wire both upieces using their correct setter methods
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
 
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
