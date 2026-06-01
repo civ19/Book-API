@@ -89,7 +89,7 @@ public class BookUnitTests {
     void testDelete_Success() {
         //arrange: since we dont return anything, we use do nothing
         Long id = 1L;
-        doNothing().when(bookRepo).deleteById(id); //return nothing
+        Mockito.when(bookRepo.existsById(id)).thenReturn(true);
 
         //act: call function and simulkate it on something
         bookService.delete(id);
