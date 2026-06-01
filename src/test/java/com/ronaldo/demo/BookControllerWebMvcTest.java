@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -50,5 +51,15 @@ public class BookControllerWebMvcTest {
         mockMvc.perform(get("/books/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized()); //expect 401
     }
 
-    //@Test //
+    @Test //testing for 400: bad request
+    public void TestGetBookById_SadPath_400() throws Exception {
+        //arrange: construct a malformed json string to simulate the conditions for a 400
+        String invalidJson = "{\"title\":\"\", \"author\":\"\"}"; //violates our notblank
+        //act and assert
+        mockMvc.perform(post("/books").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
+                .andExpect(status().isBadRequest()); //err.400
+    }
+
+    @Test
+
 }
