@@ -10,10 +10,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Assertions;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.any;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookUnitTests {
@@ -43,7 +45,24 @@ public class BookUnitTests {
 
         //VERIFY
         Mockito.verify(bookRepo, Mockito.times(1)).findById(targetId); //making sure it runs exactly one time
+    }
 
+    @Test
+    void testGetAll_Success() {
+        //arrange
+        //get all just returns all the bvooks in the repo. this means arrange gives
+        Long mockId = 1L;
+        List<Book> mockList = List.of(new Book(mockId, "The Hawk", "Author"));
+        Mockito.when(bookRepo.findAll()).thenReturn(mockList);
+
+        //act: simulate the end result target landing
+        Collection<BookResponse> mockResponse = bookService.getAll();
+
+        //assert: rules
+        Assertions.assertNotNull(mockResponse); //mockresponse must not be null
+        Assertions.assertEquals(1, mockResponse.size());
+        //verify
+        Mockito.verify(bookRepo, times(1)).findAll();
     }
 
 }
