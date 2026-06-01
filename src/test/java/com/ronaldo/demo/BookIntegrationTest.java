@@ -23,11 +23,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.hasSize;
+import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers //activates testcotnainters lifecycle managemenbt
 public class BookIntegrationTest {
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -40,6 +44,7 @@ public class BookIntegrationTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine"); //defining the container
 
     @Test
+    @WithMockUser
     public void testUpdateBook() throws Exception {
 
         //ARRANGE: prep fake data. make book, save it to db then try to update that same book in the db

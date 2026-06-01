@@ -44,8 +44,6 @@ public class SecurityConfig {
         //explicitly wire both upieces using their correct setter methods
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
-
-        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 
