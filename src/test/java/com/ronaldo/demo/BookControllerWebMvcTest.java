@@ -13,20 +13,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@WebMvcTest(BookController.class) //annotation for webmvctest
+@WebMvcTest(controllers = BookController.class, excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
+})
 public class BookControllerWebMvcTest {
     //inject web driver
     @Autowired MockMvc mockMvc;
 
-    @MockBean //tells spring: create a fake bookrepo puppet and slip it inside the book continer
-    private BookRepository bookRepo;
+    @MockBean //tells spring: create a fake bookservice puppet and slip it inside the book continer
+    private BookService bookService;
+
+    @MockBean private UserRepository userRepository;
+    @MockBean private JwtService jwtService;
 
     @Test
     public void testGetBookBy_Id_HappyPath() throws Exception {
-        //arrange: the setup of fake book and what it should do
+        //arrange: the setup of fake book and what it should do. for get, we find the book by id then return bookresponse
         Long testId = 1L;
-        Book testBook = new Book(testId, "City of Thieves", "David Benioff");
-        when(bookRepo.findById(testId)).thenReturn(Optional.of(testBook));
+        BookResponse testResponse = new BookResponse(testId, "City of Thieves", "David Benioff");
+        when(bookService.getById(testId)).thenReturn(testResponse);
 
         //Act and assert - Say the result, then check rules and assertions right after
         mockMvc.perform(get("/books/1")
@@ -34,7 +40,7 @@ public class BookControllerWebMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("City of Thieves"))
-                .andExpect(jsonPath("$.author").value(testBook.getAuthor()));
+                .andExpect(jsonPath("$.author").value(testResponse.author()));
 
     }
 }
