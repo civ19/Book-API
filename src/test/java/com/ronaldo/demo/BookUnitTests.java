@@ -85,6 +85,17 @@ public class BookUnitTests {
         verify(bookRepo, times(1)).save(any(Book.class));
     }
 
+    @Test
+    void testDelete_Success() {
+        //arrange: since we dont return anything, we use do nothing
+        Long id = 1L;
+        doNothing().when(bookRepo).deleteById(id); //return nothing
 
+        //act: call function and simulkate it on something
+        bookService.delete(id);
+
+        //assert:
+        verify(bookRepo, times(1)).deleteById(id);
+    }
 
 }
