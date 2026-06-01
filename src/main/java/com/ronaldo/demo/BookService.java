@@ -14,8 +14,8 @@ public class BookService {
     public BookResponse create(CreateBookRequest req) {
         //return the request
         Book book = new Book(req);
-        repo.save(book);
-        return new BookResponse(book.getId(), req.title(), req.author());
+        Book savedBook = repo.save(book);
+        return new BookResponse(savedBook.getId(), req.title(), req.author()); //captures saved book's id
     }
 
     //read
@@ -42,8 +42,8 @@ public class BookService {
     }
 
     public void delete(long id) {
-        Book book = repo.findById(id).orElseThrow(()-> new BookNotFoundException(id));
-        repo.delete(book);
+        if(!repo.existsById(id)) throw new BookNotFoundException(id);
+        repo.deleteById(id);
     }
 
 }

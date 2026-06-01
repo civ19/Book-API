@@ -9,11 +9,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Assertions;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.any;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookUnitTests {
@@ -43,7 +46,56 @@ public class BookUnitTests {
 
         //VERIFY
         Mockito.verify(bookRepo, Mockito.times(1)).findById(targetId); //making sure it runs exactly one time
+    }
 
+    @Test
+    void testGetAll_Success() {
+        //arrange
+        //get all just returns all the bvooks in the repo. this means arrange gives
+        Long mockId = 1L;
+        List<Book> mockList = List.of(new Book(mockId, "The Hawk", "Author"));
+        Mockito.when(bookRepo.findAll()).thenReturn(mockList);
+
+        //act: simulate the end result target landing
+        Collection<BookResponse> mockResponse = bookService.getAll();
+
+        //assert: rules
+        Assertions.assertNotNull(mockResponse); //mockresponse must not be null
+        Assertions.assertEquals(1, mockResponse.size());
+        //verify
+        Mockito.verify(bookRepo, times(1)).findAll();
+    }
+
+    @Test
+    void testCreate_Success() {
+        //arrange
+        //create saves book and then reutrns new book response with the fields put in. no id
+        CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
+        Book mockSave = new Book(1L, "Sample Title", "Sample Author");
+        Mockito.when(bookRepo.save(any(Book.class))).thenReturn(mockSave); //if we save any book, return mocksave
+
+        //act: simulate end result target landing. that is, call the function like normal
+        BookResponse response = bookService.create(req);
+
+        //assert: rules
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(response.title(), mockSave.getTitle());
+        Assertions.assertEquals("Sample Author", mockSave.getAuthor());
+
+        verify(bookRepo, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    void testDelete_Success() {
+        //arrange: since we dont return anything, we use do nothing
+        Long id = 1L;
+        Mockito.when(bookRepo.existsById(id)).thenReturn(true);
+
+        //act: call function and simulkate it on something
+        bookService.delete(id);
+
+        //assert:
+        verify(bookRepo, times(1)).deleteById(id);
     }
 
 }
