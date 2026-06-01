@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
+@Testcontainers //activates testcotnainters lifecycle managemenbt
 public class BookIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
@@ -35,12 +35,16 @@ public class BookIntegrationTest {
     @Autowired
     private BookRepository bookRepo; //inject real repo to prep data
 
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine"); //defining the container
+
     @Test
     public void testUpdateBook() throws Exception {
 
         //ARRANGE: prep fake data. make book, save it to db then try to update that same book in the db
-        Book sampleBook = new Book(null, "Old Title", "Old Author");
-        Book ogBook = bookRepo.save(sampleBook);
+        Book testBook = new Book(null, "Old Title", "Old Author");
+        Book ogBook = bookRepo.save(testBook);
         Long bookId = ogBook.getId();
         CreateBookRequest testUpdate = new CreateBookRequest("New Title", "New Author");
 
