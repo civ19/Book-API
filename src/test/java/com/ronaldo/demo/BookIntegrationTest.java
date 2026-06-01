@@ -4,14 +4,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 // Ensure your entities, repositories, and DTO imports are here:
-// import com.ronaldo.demo.model.Book;
-// import com.ronaldo.demo.repository.BookRepository;
-// import com.ronaldo.demo.dto.CreateBookRequest
+import com.ronaldo.demo.Book;
+import com.ronaldo.demo.BookRepository;
+import com.ronaldo.demo.CreateBookRequest;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 // Static imports allow us to use methods like put(), status(), and jsonPath() directly
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -21,7 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-
+@Testcontainers
 public class BookIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
