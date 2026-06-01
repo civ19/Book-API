@@ -41,6 +41,14 @@ public class BookControllerWebMvcTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("City of Thieves"))
                 .andExpect(jsonPath("$.author").value(testResponse.author()));
-
     }
+
+    @Test //testing for 401: unauthorized - no token
+    public void TestGetBookById_SadPath_401() throws Exception {
+        //arrange: nothing to arrange, you just tell them theyre unauthorized
+        //act and asset: req with no auth header. if i get a 401, it SHOULD expect unatuhorized, where the content type is a json for get
+        mockMvc.perform(get("/books/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized()); //expect 401
+    }
+
+    //@Test //
 }
