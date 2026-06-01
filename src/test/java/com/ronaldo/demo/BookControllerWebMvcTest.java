@@ -29,7 +29,12 @@ public class BookControllerWebMvcTest {
         when(bookRepo.findById(testId)).thenReturn(Optional.of(testBook));
 
         //Act and assert - Say the result, then check rules and assertions right after
-        mockMvc.perform()
+        mockMvc.perform(get("/books/1")
+                .contentType(MediaType.APPLICATION_JSON)) //says were using json for media type
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("City of Thieves"))
+                .andExpect(jsonPath("$.author").value(testBook.getAuthor()));
 
     }
 }
