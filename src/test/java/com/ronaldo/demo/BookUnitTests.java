@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Assertions;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,5 +65,26 @@ public class BookUnitTests {
         //verify
         Mockito.verify(bookRepo, times(1)).findAll();
     }
+
+    @Test
+    void testCreate_Success() {
+        //arrange
+        //create saves book and then reutrns new book response with the fields put in. no id
+        CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
+        Book mockSave = new Book(req);
+        Mockito.when(bookRepo.save(any(Book.class))).thenReturn(mockSave); //if we save any book, return mocksave
+
+        //act: simulate end result target landing. that is, call the function like normal
+        BookResponse response = bookService.create(req);
+
+        //assert: rules
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(response.title(), mockSave.getTitle());
+        Assertions.assertEquals("Sample Author", mockSave.getAuthor());
+
+        verify(bookRepo, times(1)).save(any(Book.class));
+    }
+
+
 
 }
