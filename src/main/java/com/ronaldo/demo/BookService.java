@@ -13,7 +13,10 @@ public class BookService {
     //create
     public BookResponse create(CreateBookRequest req) {
         //return the request
-        Book book = new Book(req);
+        Book book = new Book();
+        book.setTitle(req.title());
+        book.setAuthor(req.author());
+
         Book savedBook = repo.save(book);
         return new BookResponse(savedBook.getId(), req.title(), req.author()); //captures saved book's id
     }
