@@ -28,7 +28,7 @@ public class BookUnitTests {
 
     //arrange - the setup. setup the fake book, and say what it should do if the function runs
     @Test
-    void testGetBookById_Success() {
+    void testGetBookById_Success() throws Exception {
         //ARRANGE
         Long targetId = 1L;
         Book fakeBook = new Book(targetId, "The Secret History", "Donna Tartt");
@@ -49,7 +49,7 @@ public class BookUnitTests {
     }
 
     @Test
-    void testGetAll_Success() {
+    void testGetAll_Success() throws Exception {
         //arrange
         //get all just returns all the bvooks in the repo. this means arrange gives
         Long mockId = 1L;
@@ -67,7 +67,7 @@ public class BookUnitTests {
     }
 
     @Test
-    void testCreate_Success() {
+    void testCreate_Success() throws Exception {
         //arrange
         //create saves book and then reutrns new book response with the fields put in. no id
         CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
@@ -86,7 +86,7 @@ public class BookUnitTests {
     }
 
     @Test
-    void testDelete_Success() {
+    void testDelete_Success() throws Exception {
         //arrange: since we dont return anything, we use do nothing
         Long id = 1L;
         Mockito.when(bookRepo.existsById(id)).thenReturn(true);
@@ -96,6 +96,22 @@ public class BookUnitTests {
 
         //assert:
         verify(bookRepo, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testCreateFail() throws Exception {
+        //test fails if it doesnt save to repo i thinbk. so first repo makes the book, saves it then returns. so it fails if the book isnt in the repo
+        //arrange
+        CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
+        Book mockBook = new Book(1L, "Sample Title", "Sample Author");
+        when(bookRepo.save(any(Book.class))).thenReturn(mockBook);
+        //act and assert
+
+        Assertions.assertThrows(BookNotFoundException.class, () -> {
+            BookResponse resp = bookService.create(req);
+        });
+
+        verify(bookRepo, never()).save(any());
     }
 
 }
