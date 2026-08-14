@@ -34,11 +34,10 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    // Explicitly pass userDetailsService as a parameter so Spring handles the types
-    // Explicitly pass userDetailsService as a parameter so Spring handles the types
+    //Explicitly pass userDetailsService as a parameter so Spring handles the types
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
-        // Pass the userDetailsService straight into the new constructor argument!
+    
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
         //explicitly wire both upieces using their correct setter methods
