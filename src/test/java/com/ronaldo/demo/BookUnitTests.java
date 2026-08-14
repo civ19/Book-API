@@ -35,10 +35,10 @@ public class BookUnitTests {
         Mockito.when(bookRepo.findById(targetId)).thenReturn(Optional.of(fakeBook)); //if we call the findbyid on fakebooks id it should return, well, fakebook lol
         //so first we find the id then do getbyid after
 
-        //ACT - the result of the function. catches whatever test function returns
+       
         BookResponse testResponse = bookService.getById(targetId); // actual test of the function
 
-        //ASSERT - running the rules. goal: response, which is return by getbyId, must have the same stuff as the fakebook so we properly return it
+       
         Assertions.assertNotNull(testResponse); //musnt be null
         Assertions.assertEquals(targetId, testResponse.id()); //expects target id. expect = the value the code should return
         Assertions.assertEquals(fakeBook.getTitle(), testResponse.title()); //expects fakebooks title to be the same as the response's title
@@ -51,7 +51,7 @@ public class BookUnitTests {
     @Test
     void testGetAll_Success() throws Exception {
         //arrange
-        //get all just returns all the bvooks in the repo. this means arrange gives
+       
         Long mockId = 1L;
         List<Book> mockList = List.of(new Book(mockId, "The Hawk", "Author"));
         Mockito.when(bookRepo.findAll()).thenReturn(mockList);
@@ -59,7 +59,7 @@ public class BookUnitTests {
         //act: simulate the end result target landing
         Collection<BookResponse> mockResponse = bookService.getAll();
 
-        //assert: rules
+       
         Assertions.assertNotNull(mockResponse); //mockresponse must not be null
         Assertions.assertEquals(1, mockResponse.size());
         //verify
@@ -68,7 +68,7 @@ public class BookUnitTests {
 
     @Test
     void testCreate_Success() throws Exception {
-        //arrange
+        
         //create saves book and then reutrns new book response with the fields put in. no id
         CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
         Book mockSave = new Book(1L, "Sample Title", "Sample Author");
@@ -101,7 +101,7 @@ public class BookUnitTests {
     @Test
     void testCreateFail() throws Exception {
         //test fails if it doesnt save to repo i thinbk. so first repo makes the book, saves it then returns. so it fails if the book isnt in the repo
-        //arrange
+      
         CreateBookRequest req = new CreateBookRequest("Sample Title", "Sample Author");
         Book mockBook = new Book(1L, "Sample Title", "Sample Author");
         when(bookRepo.save(any(Book.class))).thenReturn(mockBook);
