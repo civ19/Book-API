@@ -21,17 +21,12 @@ public class JwtService {
     //Must be >_32 bytes when base64 decoded
     private final String SECRET_KEY = "vG95b3ViZXV0aWZ1bHN0cmluZ3RoYXRpc2V4YWN0bHlzaXh0eWZvdXJjaGFycw";
 
-    // -------------------------------
-    // LOWEST LEVEL: cryptographic key
-    // -------------------------------
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // -----------------------------------------
-    // NEXT LEVEL: parsing the token (raw claims)
-    // -----------------------------------------
+ 
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -39,17 +34,12 @@ public class JwtService {
                 .build().parseClaimsJws(token).getBody();
     }
 
-    // ---------------------------------------------------
-    // GENERIC CLAIM EXTRACTOR (used by all extract methods)
-    // ---------------------------------------------------
     public <T> T extractClaim(String token, Function<Claims,T> resolver) {
         final Claims claims = extractAllClaims(token); //parse the entire token and get all claim
         return resolver.apply(claims); //pick specific claim you wanna extract
     }
 
-    // -----------------------------------------
-    // SPECIFIC CLAIMS (username, role, expiry)
-    // -----------------------------------------
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject); //subject = email. just gives you token and its subject
     }
@@ -68,18 +58,14 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    // -----------------------------------------
-    // VALIDATION (uses the extract methods above)
-    // -----------------------------------------
+  
     public boolean isTokenValid(String token, User user) {
         final String username = extractUsername(token); //getting username from token
         //valid if username given matches user, and if not expired
         return username.equals(user.getEmail()) && !isTokenExpired(token);
     }
 
-    // -----------------------------------------
-    // TOKEN CREATION (higher-level operations)
-    // -----------------------------------------
+
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims) //setting custom claims(role)
@@ -90,9 +76,7 @@ public class JwtService {
                 .compact();
     }
 
-    // -----------------------------------------
-    // HIGHEST LEVEL: public API to generate token
-    // -----------------------------------------
+  
     public String generateToken(User user) {
         //map for the custom map to store custom class
         Map<String,Object> claims = new HashMap<>();
