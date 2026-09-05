@@ -1,63 +1,140 @@
-# Advanced Distributed Library Management APIA production-grade, event-driven backend ecosystem built using Spring Boot and Java
+# Advanced Library Management API
 
-This system leverages stateless JWT Authentication to secure REST endpoints and utilizes a decoupled microservice architecture powered by Apache Kafka and Redis to ensure extreme performance and horizontal scalability 
-This application is designed using a strictly decoupled, asynchronous architecture to maximize performance and separate resource domains  ──► ( Wi-Fi + JWT Authentication Token )
+A production-oriented REST API built with **Java and Spring Boot**, providing authenticated user access and CRUD operations for a library book catalog.
 
-### System Architecture & Data Flow
- ```
-             │
-             ▼
-  ┌────────────────────────────────────────────────────────┐
-  │  Spring Boot Ingest API Engine (Dockerized Micro-API)  │
-  ├────────────────────────────────────────────────────────┤
-  │  1. JwtAuthenticationFilter validates cryptographic ID  │
-  │  2. Route Controller extracts JSON payload parameters   │
-  │  3. Async Service fires Kafka Event Pipeline (3ms)     │
-  └────────────────────────────────────────────────────────┘
-             │
-             ▼  (Asynchronous Fire-and-Forget Message Broker)
-  ┌────────────────────────────────────────────────────────┐
-  │              Apache Kafka Event Cluster                │
-  └────────────────────────────────────────────────────────┘
-         │                                            │
-         ▼ (Background Processing)                    ▼ (Ultra-low Latency Reads)
-  ┌─────────────────────────────┐              ┌─────────────────────────────┐
-  │ PostgreSQL Database (JDBC)  │              │    Redis In-Memory Cache    │
-  │ - Long-term persistent logs │              │ - Telemetry & fast fetches  │
-  └─────────────────────────────┘              └─────────────────────────────┘
+The application uses **Spring Security with stateless JWT authentication**, PostgreSQL for persistent storage, Redis for caching, and Docker for reproducible development and deployment.
+
+## Architecture
+
+```text
+                   HTTP Client
+                       │
+                       ▼
+              ┌─────────────────┐
+              │  Spring Boot API │
+              └────────┬────────┘
+                       │
+              ┌────────▼────────┐
+              │ Spring Security │
+              │ JWT Validation  │
+              └────────┬────────┘
+                       │
+                       ▼
+                ┌─────────────┐
+                │ Controllers │
+                └──────┬──────┘
+                       │
+                       ▼
+                 ┌───────────┐
+                 │ Services  │
+                 └─────┬─────┘
+                       │
+              ┌────────┴─────────┐
+              ▼                  ▼
+        ┌───────────┐      ┌───────────┐
+        │ PostgreSQL│      │   Redis   │
+        │ Persistent│      │  Caching  │
+        │  Storage  │      │           │
+        └───────────┘      └───────────┘
 ```
 
-### Tech Stack & ComponentsCore Framework: Spring Boot 3.x 
-Security Infrastructure: Stateless JWT (JSON Web Tokens) via JJWT, BCrypt Encryption 
-Asynchronous Messaging: Apache Kafka (Event Streaming & Decoupling) 
-Performance Cache: Redis (In-Memory RAM caching, <1ms response targets)
-Primary Database: PostgreSQL (Relational persistence) 
-Virtualization Container: Docker & Docker Compose 
-Automated Testing Suite: JUnit 5, Mockito (Unit Testing), Testcontainers (Integration Testing) 
+## Core Technologies
 
-### Project Structure
-The project strictly follows the Single Responsibility Principle and Layered Architecture, distributing domain logics across modular components
-~~~
-├── config/             # Infrastructure Switchboards (SecurityConfig, AppConfig)
-├── security/           # Token Cryptography (JwtService, JwtAuthenticationFilter)
-├── controller/         # Network Traffic Controllers & HTTP Endpoint Routing
-├── service/            # Core Business Brains & Logical Execution Units
-├── repository/         # Straight-Line Database Connection Pools (PostgreSQL)
-├── entity/             # Permanent Database Structural Blueprints (User, Book)
-└── dto/                # Inbound/Outbound Data Carriers (Requests/Responses)
-~~~
+* **Java**
+* **Spring Boot 3.x**
+* **Spring Security**
+* **JWT authentication**
+* **BCrypt password hashing**
+* **PostgreSQL**
+* **Redis**
+* **Docker / Docker Compose**
+* **JUnit 5**
+* **Mockito**
+* **Testcontainers**
 
-### Operational Endpoints
-###Authentication Context (/auth/**)
-- POST /auth/register - Creates a new user profile. Automatically salts passwords using BCrypt and registers standard roles (ROLE_USER). Status: 201 Created.
-- POST /auth/login - Cross-examines input credentials against PostgreSQL. Fires a 512-bit signed JWT bearer badge to the client upon successful match 
-- Status: 200 OK 
+## Architecture & Design
 
-### Inventory Resource Context (/books/**)
-- GET /books - Public route. Retrieves full catalog Optimized via Redis @Cacheable annotations 
-- POST /books - Secured route. Requires a valid, non-expired JWT Bearer header token. Intercepted globally by OncePerRequestFilter 
+The application follows a layered architecture with clear separation of responsibilities:
 
-### Testing Policy & Design
-We enforce strict validation metrics across the Test Pyramid to protect the codebase against behavioral regression 
-- Unit Tests: Driven by JUnit 5 and Mockit. Business services are extracted and tested in absolute isolation under 50ms using mocked dependencies to guarantee mathematical determinism 
-- Integration Tests: Driven by Testcontainers [index=0.1.11]. Spring context is loaded alongside a transient Docker container instance of a real PostgreSQL database to verify data mapping integrity.
+```text
+config/          Application and security configuration
+security/        JWT authentication and security infrastructure
+controller/      HTTP request handling and REST endpoints
+service/         Business logic
+repository/      PostgreSQL data access
+entity/          Persistent domain models
+dto/             Request and response objects
+```
+
+The API separates HTTP handling, business logic, persistence, authentication, and data-transfer concerns rather than placing application logic directly inside controllers.
+
+## Authentication
+
+Authentication is implemented using **Spring Security and stateless JWTs**.
+
+### `POST /auth/register`
+
+Creates a new user account.
+
+* Passwords are hashed using BCrypt.
+* New users receive the standard user role.
+* Returns an appropriate HTTP success status.
+
+### `POST /auth/login`
+
+Authenticates a user's credentials and returns a signed JWT upon successful authentication.
+
+Subsequent protected requests authenticate using the JWT Bearer token.
+
+Spring Security's request filtering infrastructure validates the token before allowing access to protected endpoints.
+
+## Book API
+
+### `GET /books`
+
+Retrieves the available book catalog.
+
+The endpoint uses Redis caching to reduce repeated database reads.
+
+### `POST /books`
+
+Creates a new book.
+
+The endpoint requires successful JWT authentication.
+
+Additional CRUD operations are implemented for managing book resources.
+
+## Testing
+
+The project uses multiple levels of automated testing.
+
+### Unit Testing
+
+**JUnit 5 and Mockito** are used to test business logic independently from infrastructure dependencies.
+
+Services can be tested with mocked repositories and other dependencies, allowing business behavior to be verified in isolation.
+
+### Integration Testing
+
+**Testcontainers** is used to run PostgreSQL in a temporary Docker container during integration tests.
+
+This allows database interaction and persistence behavior to be tested against a real PostgreSQL instance rather than relying exclusively on mocks.
+
+## Deployment
+
+The application and its supporting infrastructure can be run using **Docker Compose**, providing a reproducible local environment for the Spring Boot application, PostgreSQL, and Redis.
+
+## Project Goals
+
+The project demonstrates practical experience with:
+
+* REST API design
+* Spring Boot application architecture
+* Spring Security
+* Stateless authentication
+* JWT-based authorization
+* Relational database persistence
+* Redis caching
+* Layered architecture
+* Automated unit and integration testing
+* Containerized development
