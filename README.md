@@ -4,7 +4,7 @@ A backend system for managing a library book catalog, user accounts, and authent
 
 The API allows users to browse and manage books while providing secure user registration and login through Spring Security and JWT authentication.
 
-The project was built to demonstrate the structure of a real backend application, including REST API design, layered architecture, secure authentication, PostgreSQL persistence, centralized error handling, and automated testing.
+The project was built to demonstrate the structure of a real backend application, including REST API design, layered architecture, secure authentication, PostgreSQL persistence, centralized error handling, automated testing, and code coverage.
 
 ---
 
@@ -35,7 +35,7 @@ Authentication is implemented using **Spring Security** and **JSON Web Tokens (J
 
 The authentication flow is:
 
-```text id="5v5t7e"
+```text
 Register
    ↓
 Password hashed with BCrypt
@@ -61,7 +61,7 @@ The application uses stateless authentication, with Spring Security validating t
 
 The application follows a layered architecture that separates the major responsibilities of the backend.
 
-```text id="r2v1zz"
+```text
 Client
   │
   ▼
@@ -85,7 +85,7 @@ PostgreSQL
 
 The project is organized into distinct layers:
 
-```text id="q3t6ak"
+```text
 config/          Application and security configuration
 security/        JWT authentication and security infrastructure
 controller/      HTTP request handling and REST endpoints
@@ -119,7 +119,7 @@ This allows cases such as invalid requests, missing resources, and application-l
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & Code Coverage
 
 Testing is implemented at both the unit and integration levels.
 
@@ -135,6 +135,12 @@ Services can be tested using mocked repositories and other dependencies, allowin
 
 This allows database interaction and persistence behavior to be tested against a real PostgreSQL instance rather than relying entirely on mocks.
 
+### Code Coverage
+
+**JaCoCo** is used to measure test coverage across the application.
+
+This provides visibility into which parts of the codebase are exercised by the automated test suite.
+
 ---
 
 ## 🚧 Next Release — v1.0.1
@@ -145,11 +151,11 @@ The next release is planned to expand the project's deployment and development w
 
 ### 🐳 Docker
 
-A dedicated Dockerfile and Docker Compose configuration will be added to make the application and its database environment easier to build and run consistently.
+A dedicated **Dockerfile** and **Docker Compose** configuration will be added to make the application and its database environment easier to build and run consistently.
 
 ### 🔄 CI/CD
 
-A CI/CD pipeline will also be introduced to automate the development workflow, including building and testing the application when changes are made.
+A **CI/CD pipeline** will also be introduced to automate the development workflow, including building and testing the application when changes are made.
 
 These features are planned for **v1.0.1** and are not represented as capabilities of the current release.
 
@@ -168,6 +174,7 @@ These features are planned for **v1.0.1** and are not represented as capabilitie
 | Database               | PostgreSQL             |
 | Unit Testing           | JUnit 5, Mockito       |
 | Integration Testing    | Testcontainers         |
+| Code Coverage          | JaCoCo                 |
 | Planned Infrastructure | Docker, Docker Compose |
 | Planned Automation     | CI/CD                  |
 
@@ -189,6 +196,7 @@ This project demonstrates experience with:
 * Centralized exception handling
 * Unit testing with JUnit 5 and Mockito
 * Integration testing with Testcontainers
+* Code coverage with JaCoCo
 * Iterative backend development
 * Planned containerization and CI/CD automation
 
@@ -198,6 +206,6 @@ This project demonstrates experience with:
 
 The goal was to build a backend that goes beyond basic database operations.
 
-The library catalog provides the user-facing functionality, while the underlying architecture demonstrates how a backend application handles authentication, business logic, persistence, error handling, and automated testing as a cohesive system.
+The library catalog provides the user-facing functionality, while the underlying architecture demonstrates how a backend application handles authentication, business logic, persistence, error handling, automated testing, and code coverage as a cohesive system.
 
 The project is being developed incrementally, with Docker-based deployment and CI/CD automation planned for the next release.
